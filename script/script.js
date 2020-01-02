@@ -34,7 +34,22 @@ btnExit.addEventListener('click', () => {
 formCustomer.addEventListener('submit', (event) => {
     event.preventDefault();
     const obj = {};
-    for(const elem of formCustomer.elements) {
+
+    [...formCustomer.elements].forEach((elem) => {
+        if((elem.tagName === 'INPUT' && elem.type !== 'radio') ||
+        (elem.type === 'radio' && elem.checked) || elem.tagName === 'TEXTAREA'){
+            obj[elem.name] = elem.value;
+
+        if(elem.type !== 'radio') {
+            elem.value = "";
+        }
+        }
+    
+    });
+   
+
+
+  /*  for(const elem of formCustomer.elements) {
         if((elem.tagName === 'INPUT' && elem.type !== 'radio') ||
         (elem.type === 'radio' && elem.checked) || elem.tagName === 'TEXTAREA'){
             obj[elem.name] = elem.value;
@@ -44,6 +59,9 @@ formCustomer.addEventListener('submit', (event) => {
         }
         }
     }
+    */
+   formCustomer.reset();//сброс для формы после сохранения
+
     orders.push(obj);
     console.log(orders);
 });
