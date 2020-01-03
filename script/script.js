@@ -9,32 +9,49 @@ const customer = document.getElementById('customer'),
  blockChoice = document.getElementById('block-choice'),
  btnExit = document.getElementById('btn-exit'),
  formCustomer = document.getElementById('form-customer'),
- ordersTable = document.getElementById('orders');
+ ordersTable = document.getElementById('orders'),
+ modalOrder = document.getElementById('order_read'),
+ modalOrderActive = document.getElementById('order_active');
 
 const orders = [];
 
 const renderOrders = () => {
 
-    orders.forEach((order, i) => {
+    ordersTable.textContent = '';
 
+    orders.forEach((order, i) => {
     ordersTable.innerHTML += `
-        <tr class="order">
+        <tr class="order" data-number-order="${i}">
 		    <td>${i + 1}</td>
 		    <td>${order.title}</td>
 		    <td class="${order.currency}"></td>
 		    <td>${order.deadline}</td>
 	    </tr>
         `;
-
-    });
-
-   
+    }); 
 };
 
+const openModal = (numberOrder) => {
+    const order = orders[numberOrder];
+    const modal = order.active ? modalOrderActive : modalOrder;
+    modal.style.display = 'block';
+}
+
+ordersTable.addEventListener('click', (e) => {
+  const target = e.target;
+  console.log('target: ', target);
+
+    const targetOrder = target.closest('.order');
+    if(targetOrder) {
+        openModal(targetOrder.dataset.numberOrder);
+    }
+
+});
+
 customer.addEventListener('click', () => {
-blockChoice.style.display = 'none';   
-blockCustomer.style.display = 'block';
-btnExit.style.display = 'block';
+    blockChoice.style.display = 'none';   
+    blockCustomer.style.display = 'block';
+    btnExit.style.display = 'block';
 });
 
 freelancer.addEventListener('click', () => {
@@ -83,7 +100,7 @@ formCustomer.addEventListener('submit', (event) => {
    formCustomer.reset();//сброс для формы после сохранения
 
     orders.push(obj);
-    console.log(orders);
+    
 });
 
     
