@@ -34,8 +34,22 @@ const renderOrders = () => {
 const openModal = (numberOrder) => {
     const order = orders[numberOrder];
     const modal = order.active ? modalOrderActive : modalOrder;
+
+    const firstNameBlock = document.querySelector('.firstName'),
+        titleBlock = document.querySelector('.modal-title'),
+        emailBlock = document.querySelector('.email'),
+        descriptionBlock = document.querySelector('.description'),
+        deadlineBlock = document.querySelector('.deadline'),
+        currencyBlock = document.querySelector('.currency_img'),
+        countBlock = document.querySelector('.count'),
+        phoneBlock = document.querySelector('.phone');
+
+        titleBlock.textContent = order.title;
+
     modal.style.display = 'block';
-}
+
+
+};
 
 ordersTable.addEventListener('click', (e) => {
   const target = e.target;
