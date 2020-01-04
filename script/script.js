@@ -21,7 +21,8 @@ const renderOrders = () => {
 
     orders.forEach((order, i) => {
     ordersTable.innerHTML += `
-        <tr class="order" data-number-order="${i}">
+        <tr class="order ${order.active ? 'taken' : ''}"
+             data-number-order="${i}">
 		    <td>${i + 1}</td>
 		    <td>${order.title}</td>
 		    <td class="${order.currency}"></td>
@@ -31,29 +32,77 @@ const renderOrders = () => {
     }); 
 };
 
+const handlerModal = (e) => {
+    const target = e.target;
+    const modal = target.closest('.order-modal');
+    const order = orders[modal.id];
+
+    if(target.closest('.close') || target === modal) {
+        modal.style.display = 'none';
+    }
+
+    if(target.classList.contains('get-order')) {
+        order.active = true;
+        modal.style.display = 'none';
+        renderOrders();
+    }
+
+    if(target.id === 'capitulation') {
+        order.active = false;
+        modal.style.display = 'none';
+        renderOrders();
+    }
+
+    if(target.id === 'ready') {
+        
+        orders.splice(orders.indexOf(order), 1);
+
+        modal.style.display = 'none';
+        renderOrders();
+    }
+};
+
 const openModal = (numberOrder) => {
     const order = orders[numberOrder];
-    const modal = order.active ? modalOrderActive : modalOrder;
+    
+    const { title, firstName, email, phone, description, amount,
+        currency, deadline, active = false } = order;
 
-    const firstNameBlock = document.querySelector('.firstName'),
-        titleBlock = document.querySelector('.modal-title'),
-        emailBlock = document.querySelector('.email'),
-        descriptionBlock = document.querySelector('.description'),
-        deadlineBlock = document.querySelector('.deadline'),
-        currencyBlock = document.querySelector('.currency_img'),
-        countBlock = document.querySelector('.count'),
-        phoneBlock = document.querySelector('.phone');
+    const modal = active ? modalOrderActive : modalOrder;
 
-        titleBlock.textContent = order.title;
 
-    modal.style.display = 'block';
+    const firstNameBlock = modal.querySelector('.firstName'),
+        titleBlock = modal.querySelector('.modal-title'),
+        emailBlock = modal.querySelector('.email'),
+        descriptionBlock = modal.querySelector('.description'),
+        deadlineBlock = modal.querySelector('.deadline'),
+        currencyBlock = modal.querySelector('.currency_img'),
+        countBlock = modal.querySelector('.count'),
+        phoneBlock = modal.querySelector('.phone');
+
+        modal.id = numberOrder;
+        titleBlock.textContent = title;
+        firstNameBlock.textContent = firstName;
+        emailBlock.textContent = email;
+        emailBlock.href = 'mailto:' + email;
+        descriptionBlock.textContent = description;
+        deadlineBlock.textContent = deadline;
+        currencyBlock.className = 'currency_img';
+        currencyBlock.classList.add(currency);
+        countBlock.textContent = amount;
+        phoneBlock ? phoneBlock.href = 'tel:' + phone : '';
+
+
+
+    modal.style.display = 'flex';
+
+    modal.addEventListener('click', handlerModal);
 
 
 };
 
 ordersTable.addEventListener('click', (e) => {
   const target = e.target;
-  console.log('target: ', target);
 
     const targetOrder = target.closest('.order');
     if(targetOrder) {
@@ -91,9 +140,9 @@ formCustomer.addEventListener('submit', (event) => {
         (elem.type === 'radio' && elem.checked) || elem.tagName === 'TEXTAREA'){
             obj[elem.name] = elem.value;
 
-        if(elem.type !== 'radio') {
-            elem.value = "";
-        }
+        // if(elem.type !== 'radio') {
+        //     elem.value = "";
+        // }
         }
     
     });
