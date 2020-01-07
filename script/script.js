@@ -13,7 +13,13 @@ const customer = document.getElementById('customer'),
  modalOrder = document.getElementById('order_read'),
  modalOrderActive = document.getElementById('order_active');
 
-const orders = [];
+const orders = JSON.parse(localStorage.getItem('freeOrders')) || [];
+console.log( orders);
+
+const toStorage = () => {
+    localStorage.setItem('freeOrders', JSON.stringify(orders));
+}
+
 
 const renderOrders = () => {
 
@@ -147,7 +153,11 @@ formCustomer.addEventListener('submit', (event) => {
     
     });
    
+    formCustomer.reset();//сброс для формы после сохранения
 
+    orders.push(obj);
+
+    toStorage();
 
   /*  for(const elem of formCustomer.elements) {
         if((elem.tagName === 'INPUT' && elem.type !== 'radio') ||
@@ -160,9 +170,7 @@ formCustomer.addEventListener('submit', (event) => {
         }
     }
     */
-   formCustomer.reset();//сброс для формы после сохранения
-
-    orders.push(obj);
+  
     
 });
 
